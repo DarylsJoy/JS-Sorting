@@ -53,6 +53,24 @@ Array.prototype.insertSort = Array.prototype.insertSort || function () {
 };
 
 // 归并排序
+// 合并小数组生成大数组
+let merge = function (left, right) {
+  let result = [], il = 0, ir = 0;
+  while (il < left.length && ir < right.length) {
+    if (left[il] < right[ir]) {
+      result.push(left[il++]);
+    } else {
+      result.push(right[ir++]);
+    }
+  }
+  while (il < left.length) {
+    result.push(left[il++]);
+  }
+  while (ir < right.length) {
+    result.push(right[ir++]);
+  }
+  return result;
+};
 Array.prototype.mergeSort = Array.prototype.mergeSort || function () {
   let length = this.length;
   if (length === 1) {
@@ -61,55 +79,37 @@ Array.prototype.mergeSort = Array.prototype.mergeSort || function () {
   let mid = Math.floor(length / 2),
       left = this.slice(0, mid),
       right = this.slice(mid, length);
-  // 合并小数组生成大数组
-  let merge = function (left, right) {
-    let result = [], il = 0, ir = 0;
-    while (il < left.length && ir < right.length) {
-      if (left[il] < right[ir]) {
-        result.push(left[il++]);
-      } else {
-        result.push(right[ir++]);
-      }
-    }
-    while (il < left.length) {
-      result.push(left[il++]);
-    }
-    while (ir < right.length) {
-      result.push(right[ir++]);
-    }
-    return result;
-  };
   return merge(left.mergeSort(), right.mergeSort());
 };
 
 // 快速排序
+// 划分过程
+let partition = function (array, left, right) {
+  let pivot = array[Math.floor((left + right) / 2)],
+      l = left,
+      r = right,
+      temp;
+  while (l <= r) {
+    while (array[l] < pivot) {
+      l++;
+    }
+    while (array[r] > pivot) {
+      r--;
+    }
+    if (l <= r) {
+      temp = array[l];
+      array[l] = array[r];
+      array[r] = temp;
+      l++;
+      r--;
+    }
+  }
+  return l;
+};
 Array.prototype.quickSort = Array.prototype.quickSort || function (lt, rt) {
   let left = lt || 0,
       right = rt || this.length - 1,
       index;
-  // 划分过程
-  let partition = function (array, left, right) {
-    let pivot = array[Math.floor((left + right) / 2)],
-        l = left,
-        r = right,
-        temp;
-    while (l <= r) {
-      while (array[l] < pivot) {
-        l++;
-      }
-      while (array[r] > pivot) {
-        r--;
-      }
-      if (l <= r) {
-        temp = array[l];
-        array[l] = array[r];
-        array[r] = temp;
-        l++;
-        r--;
-      }
-    }
-    return l;
-  };
   if (this.length > 1) {
     index = partition(this, left, right);
     if (left < index - 1) {
